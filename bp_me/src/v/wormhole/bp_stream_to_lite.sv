@@ -25,7 +25,7 @@ module bp_stream_to_lite
    , input [in_data_width_p-1:0]             mem_data_i
    , input                                   mem_v_i
    , output logic                            mem_ready_o
-   , input                                   mem_lock_i
+   , input                                   mem_last_i
 
    // Client BP Lite
    // ready-valid-and
@@ -89,7 +89,7 @@ module bp_stream_to_lite
      ,.len_ready_o(/* Unused */)
      );
 
-  wire unused = &{mem_lock_i};
+  wire unused = &{mem_last_i};
 
   bp_bedrock_out_mem_msg_s mem_cast_o;
   assign mem_cast_o = '{header: header_lo, data: data_lo};
