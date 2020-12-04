@@ -35,6 +35,13 @@ bsg_counter_clear_up
    );
 assign warm = (warmup_cnt == warmup_instr_i);
 
+logic [63:0] cache_access_count;
+logic [63:0] cache_hit_count;
+
+   
+assign cache_access_count = testbench.wrapper.unicore.dut.core_minimal.be.calculator.pipe_mem.dcache.cache_access_count; //testbench.wrapper.dut.core_minimal.be.be_mem.
+assign cache_hit_count = testbench.wrapper.unicore.dut.core_minimal.be.calculator.pipe_mem.dcache.cache_hit_count;
+
 logic [63:0] clk_cnt_r;
 logic [63:0] instr_cnt_r;
 
@@ -83,6 +90,9 @@ always_ff @(posedge clk_i)
       $display("\tclk   : %d", clk_cnt_r);
       $display("\tinstr : %d", instr_cnt_r);
       $display("\tmIPC  : %d", instr_cnt_r * 1000 / clk_cnt_r);
+      $display("\tMiss count    : %d", cache_access_count);
+      $display("\tAccess count  : %d", cache_hit_count+cache_access_count);
+      $display("\tHit rate      : %d \%", 100*cache_hit_count/(cache_access_count+cache_hit_count)); 
     end
 
 endmodule
