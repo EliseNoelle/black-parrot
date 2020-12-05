@@ -729,6 +729,30 @@ module bp_be_dcache
   assign cache_req_metadata_cast_o.repl_way = lru_way_li;
   assign cache_req_metadata_cast_o.dirty = stat_mem_data_lo.dirty[lru_way_li];
 
+  logic [63:0] cache_access_count;
+  logic [63:0] cache_hit_count;
+
+  always_ff @ (negedge clk_i) begin
+    if (reset_i) begin
+
+      cache_access_count <= 64'd0;
+      cache_hit_count <= 64'd0;
+
+    end 
+    else begin
+      if (v_tv_r) begin
+        if ( ($countones(load_hit_tl) == 1) || ($countones(store_hit_tl) == 1) ) begin
+          cache_hit_count <= cache_hit_count + 64'd1;
+        end
+      end 
+      if(cache_req_complete_i) begin
+        cache_access_count <= cache_access_count + 64'd1;
+      end
+    end
+  end
+
+ 
+
   // output stage
   // Cache Miss Tracking logic
   logic cache_miss_r;
