@@ -896,7 +896,7 @@ module bp_be_dcache
   
   bp_be_dcache_lru 
   # (.NUMWAYS(dcache_assoc_p))
-  mor1kx_cache_lru(
+  mor1kx_cache_lru_encode(
      .current(stat_mem_data_lo.lru),
      .update(),
      .access(),
@@ -1411,9 +1411,19 @@ module bp_be_dcache
     .ways_p(dcache_assoc_p)
   ) lru_decode (
     .way_id_i(lru_decode_way_li)
-    ,.data_o(lru_decode_data_lo)
+    //,.data_o(lru_decode_data_lo)
+    ,.data_o()
     ,.mask_o(lru_decode_mask_lo)
   );
+
+   bp_be_dcache_lru 
+  # (.NUMWAYS(dcache_assoc_p))
+  mor1kx_cache_lru_decode(
+     .current(),
+     .update(lru_decode_data_lo),
+     .access(lru_decode_way_li),
+     .lru_pre(),
+     .lru_post());  
 
 
   logic [lg_dcache_assoc_lp-1:0] dirty_mask_way_li;
